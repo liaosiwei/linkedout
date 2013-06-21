@@ -6,7 +6,7 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'Linkedout.views.home', name='home'),
+    url(r'^$', 'linker.views.home', name='home'),
     # url(r'^Linkedout/', include('Linkedout.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
