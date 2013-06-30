@@ -1,0 +1,1 @@
+{% extends "linker/base.html" %}{% block title %}注册帐号{% endblock %}{% block content %}  <h1>帐号注册</h1>  <form action="" method="post">{% csrf_token %}      {{ form.as_p }}      <input type="submit" value="Create the account">  </form>{% endblock %}

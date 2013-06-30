@@ -18,6 +18,7 @@ class Linker(models.Model):
     opinion = models.CharField(max_length=400, null=True, blank=True)
     votes = models.IntegerField(default=0)
     date = models.DateTimeField('date created', null=True, blank=True)
+    # deleted = models.BooleanField(default=False) 
     
     def __unicode__(self):
         return u'%s: %s' % (self.name, self.link)

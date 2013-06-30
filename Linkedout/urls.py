@@ -7,6 +7,8 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'linker.views.home', name='home'),
+    url(r'^ajaxAddUrl/$', 'linker.views.ajaxAddUrl'),
+    url(r'^', include('auths.urls')),
     # url(r'^Linkedout/', include('Linkedout.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
