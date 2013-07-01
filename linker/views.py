@@ -9,6 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 from models import Container, Linker
 
 def home(request):
+    user = request.user
+    if user.is_authenticated():
+        container_list = user.container_set.all()
+        return render(request, 'linker/index.html', {'container_list': container_list})
     return render(request, 'linker/index.html')
 
 @login_required(login_url = '/')
@@ -25,6 +29,8 @@ def ajaxAddUrl(request):
             except:
                 newContainer = Container(user=user, name=post['container'])
                 newContainer.save()
+            if not post['link'].startswith("http"): #http://www.ifeng.com/
+                post['link'] = 'http://' + post['link']
             try:
                 newLinker = Linker.objects.get(link=post['link'])
             except:
