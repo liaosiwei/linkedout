@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from forms import SignUpForm
+from .forms import SignUpForm
 # Create your views here.
 
 def register(request):

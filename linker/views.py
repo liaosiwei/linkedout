@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
-from models import Container, Linker
+from .models import Container, Linker
 
 def home(request):
     user = request.user
