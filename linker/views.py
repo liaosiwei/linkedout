@@ -21,8 +21,8 @@ def ajaxAddUrl(request):
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
-        if post.has_key('container') and post.has_key('link') and \
-        post.has_key('tip') and post.has_key('name'):
+        if 'container' in post and 'link' in post and \
+        'tip' in post and 'name' in post:
             user = request.user
             try:
                 newContainer = Container.objects.get(name=post['container'])

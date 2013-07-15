@@ -1,4 +1,8 @@
 # Django settings for Linkedout project.
+import os
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIRNAME = PROJECT_ROOT.split(os.sep)[-1]
+DB_PATH = PROJECT_ROOT[:PROJECT_ROOT.rfind(os.sep)].replace(os.sep, '/') + '/sqlite.db'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -11,14 +15,17 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',#'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'Linked',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',#'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'linker',#'F:/sqlite.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'root',
+        'USER': 'postgres',
         'PASSWORD': '123456',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
-        "STORAGE_ENGINE": "MYISAM",
+        'OPTIONS': {
+            'autocommit': True,
+        },
+        #"STORAGE_ENGINE": "MYISAM",
     }
 }
 
