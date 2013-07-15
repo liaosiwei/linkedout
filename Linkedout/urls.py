@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'linker.views.home', name='home'),
     url(r'^ajaxAddUrl/$', 'linker.views.ajaxAddUrl'),
+    url(r'^ajaxDelUrl/$', 'linker.views.ajaxDelUrl'),
+    url(r'^autoComplete/$', 'linker.views.autoComplete'),
     url(r'^', include('auths.urls')),
     # url(r'^Linkedout/', include('Linkedout.foo.urls')),
 
