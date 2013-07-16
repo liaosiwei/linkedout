@@ -1,12 +1,13 @@
 # Create your views here.
+from .models import Container, Linker
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-#from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
-from .models import Container, Linker
+from utils.createXml import createXmlTree
+#from django.contrib.auth.forms import AuthenticationForm
 
 def home(request):
     '''
@@ -48,6 +49,7 @@ def ajaxAddUrl(request):
             else:
                 if newLinker.deleted == True:
                     newLinker.deleted = False
+                    newLinker.opinion = post['tip']
                     newLinker.save()
                     to_return['result'] = 'success'
     serialized = simplejson.dumps(to_return)
@@ -95,4 +97,31 @@ def autoComplete(request):
     serialized = simplejson.dumps(to_return)
     return HttpResponse(serialized, mimetype="application/json")
                 
-            
+@login_required(login_url = '/')
+def downloadXml(request):
+    '''
+    create an xml file containing user's all data and make downloadable for users
+    '''         
+    import io
+    xmlfile = io.BytesIO()
+    tree = createXmlTree(request.user)
+    tree.write(xmlfile)
+    xmlfile.seek(0)
+    
+    return HttpResponse(xmlfile.read())
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

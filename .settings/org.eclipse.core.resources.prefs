@@ -5,4 +5,6 @@ encoding//auths/templates/auths/logout.html=UTF-8
 encoding//auths/templates/auths/pwd_change.html=UTF-8
 encoding//auths/templates/auths/register.html=UTF-8
 encoding//auths/views.py=UTF-8
+encoding//linker/static/linker/js/addurls.js=UTF-8
+encoding//linker/static/linker/js/mouseover.js=UTF-8
 encoding//linker/templates/linker/index.html=UTF-8
