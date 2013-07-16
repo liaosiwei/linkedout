@@ -9,15 +9,21 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Container, Linker
 
 def home(request):
+    '''
+    show the index page of this website depending on whether the user is logged in or not
+    '''
     user = request.user
     if user.is_authenticated():
-        container_list = user.container_set.all()
+        container_list = user.container_set.order_by('id')
         return render(request, 'linker/index.html', {'container_list': container_list})
     return render(request, 'linker/index.html')
 
 @login_required(login_url = '/')
 @csrf_exempt
 def ajaxAddUrl(request):
+    '''
+    use ajax to respond to user's adding new bookmarks' request
+    '''
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
@@ -50,6 +56,10 @@ def ajaxAddUrl(request):
 @login_required(login_url = '/')
 @csrf_exempt
 def ajaxDelUrl(request):
+    '''
+    use ajax to respond to user's deleting old bookmarks' request. 
+    Be cautious: data is not actually deleted from database, I just mark it as "deleted" using one field 
+    '''
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
@@ -70,11 +80,14 @@ def ajaxDelUrl(request):
 @login_required(login_url = '/')
 @csrf_exempt
 def autoComplete(request):
+    '''
+    jquery-ui's auto-complete function which must return JSON
+    '''
     to_return = {}
     if request.method == 'GET':
         if 'term' in request.GET:
             term = request.GET['term']
-            containers = Container.objects.filter(name__startswith=term)
+            containers = Container.objects.filter(name__startswith=term).distinct()
             count = 0
             for one in containers:
                 count += 1
