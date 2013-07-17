@@ -102,13 +102,12 @@ def downloadXml(request):
     '''
     create an xml file containing user's all data and make downloadable for users
     '''         
-    import io
-    xmlfile = io.BytesIO()
-    tree = createXmlTree(request.user)
-    tree.write(xmlfile)
-    xmlfile.seek(0)
+
+    xmlstr = createXmlTree(request.user)
+    response = HttpResponse(xmlstr,mimetype='application/octet-stream')
+    response['Content-Disposition'] = 'attachment; filename=%s' %  request.user.username + '.xml'
     
-    return HttpResponse(xmlfile.read())
+    return response
     
 
     
