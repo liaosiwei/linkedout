@@ -18,6 +18,8 @@ def createXmlTree(user):
         </parent2>
     </root>
     children_list must be fetched through parent_list
+    
+    return the tree unicode string
     '''
 
     root = ET.Element("root")
@@ -28,9 +30,8 @@ def createXmlTree(user):
             c_tag = ET.SubElement(p_tag, 'a', {"href": one_link.link})
             c_tag.text = one_link.name
 
-#     tree = ET.ElementTree(root)
     return ET.tostring(root, 'unicode')
-    #tree.write("D:/" + user.username + ".xml")
+
         
 if __name__ == '__main__':
     pass

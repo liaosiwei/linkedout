@@ -53,7 +53,7 @@ $(document).ready(function() {
           bValid = bValid && checkLength( container, "分类标题的长度", 2, 16 );
           bValid = bValid && checkLength( name, "名称的长度", 2, 16 );
           bValid = bValid && checkLength( address, "网址的长度", 6, 80 );
-          bValid = bValid && checkLength( tip, "说明的长度", 0, 100 );
+          bValid = bValid && checkLength( tip, "说明的长度", 0, 50 );
  
           // bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "Username may consist of a-z, 0-9, underscores, begin with a letter." );
           // From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/

@@ -14,9 +14,9 @@ class Container(models.Model):
 class Linker(models.Model):
     container = models.ForeignKey(Container, blank=True, null=True)
     name = models.CharField(max_length=40, null=True, blank=True)
-    link = models.CharField(max_length=200, null=True, blank=True)    
+    link = models.URLField(max_length=200, null=True, blank=True)    
     opinion = models.CharField(max_length=400, null=True, blank=True)
-    votes = models.IntegerField(default=0)
+    votes = models.DecimalField(default=0, max_digits=3, decimal_places=1)
     date = models.DateTimeField('date created', null=True, blank=True)
     deleted = models.BooleanField(default=False) 
     

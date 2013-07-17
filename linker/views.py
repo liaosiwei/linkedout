@@ -19,6 +19,7 @@ def home(request):
         return render(request, 'linker/index.html', {'container_list': container_list})
     return render(request, 'linker/index.html')
 
+
 @login_required(login_url = '/')
 @csrf_exempt
 def ajaxAddUrl(request):
@@ -54,6 +55,7 @@ def ajaxAddUrl(request):
                     to_return['result'] = 'success'
     serialized = simplejson.dumps(to_return)
     return HttpResponse(serialized, mimetype="application/json")
+
 
 @login_required(login_url = '/')
 @csrf_exempt
@@ -96,6 +98,7 @@ def autoComplete(request):
                 to_return["choice"+str(count)] = one.name
     serialized = simplejson.dumps(to_return)
     return HttpResponse(serialized, mimetype="application/json")
+
                 
 @login_required(login_url = '/')
 def downloadXml(request):
