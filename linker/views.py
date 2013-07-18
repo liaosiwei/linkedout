@@ -37,6 +37,8 @@ def ajaxAddUrl(request):
             except:
                 newContainer = Container(user=user, name=post['container'])
                 newContainer.save()
+                
+            post['link'] = post['link'].strip('/')
             if not post['link'].startswith("http"): #http://www.ifeng.com/
                 post['link'] = 'http://' + post['link']
             try:
@@ -113,7 +115,54 @@ def downloadXml(request):
     return response
     
 
+@login_required(login_url = '/')
+@csrf_exempt
+def ajaxUpdateTips(request):
+    '''
+    update user's urls' opinion
+    '''
     
+    to_return = {'result': 'failed'}
+    if request.method == 'POST':
+        post = request.POST.copy()
+        if 'container' in post and 'link' in post and 'tips' in post:
+            try:
+                container = request.user.container_set.get(name=post['container'])
+                link = container.linker_set.get(link=post['link'])
+            except:
+                pass
+            else:
+                link.opinion = post['tips']
+                link.save()
+                to_return['result'] = 'success'
+            
+    serialized = simplejson.dumps(to_return)
+    return HttpResponse(serialized, mimetype="application/json")
+
+
+@login_required(login_url = '/')
+@csrf_exempt
+def ajaxUpdateVotes(request):
+    '''
+    update user's urls' votes
+    '''
+    
+    to_return = {'result': 'failed'}
+    if request.method == 'POST':
+        post = request.POST.copy()
+        if 'container' in post and 'link' in post and 'votes' in post:
+            try:
+                container = request.user.container_set.get(name=post['container'])
+                link = container.linker_set.get(link=post['link'])
+            except:
+                pass
+            else:
+                link.votes = post['votes'].strip()
+                link.save()
+                to_return['result'] = 'success'            
+            
+    serialized = simplejson.dumps(to_return)
+    return HttpResponse(serialized, mimetype="application/json")
     
     
     
