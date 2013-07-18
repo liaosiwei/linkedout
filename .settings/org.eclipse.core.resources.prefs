@@ -7,5 +7,7 @@ encoding//auths/templates/auths/register.html=UTF-8
 encoding//auths/views.py=UTF-8
 encoding//linker/static/linker/js/addurls.js=UTF-8
 encoding//linker/static/linker/js/mouseover.js=UTF-8
+encoding//linker/static/linker/js/setvalues.js=UTF-8
+encoding//linker/templates/linker/home.html=UTF-8
 encoding//linker/templates/linker/index.html=UTF-8
 encoding//linker/templates/linker/index_v2.html=UTF-8

@@ -16,8 +16,8 @@ def home(request):
     user = request.user
     if user.is_authenticated():
         container_list = user.container_set.order_by('id')
-        return render(request, 'linker/index.html', {'container_list': container_list})
-    return render(request, 'linker/index.html')
+        return render(request, 'linker/home.html', {'container_list': container_list})
+    return render(request, 'linker/home.html')
 
 
 @login_required(login_url = '/')
