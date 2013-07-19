@@ -4,9 +4,9 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 from utils.createXml import createXmlTree
+from utils.decorators import ajaxWrapper
 #from django.contrib.auth.forms import AuthenticationForm
 
 def home(request):
@@ -22,6 +22,7 @@ def home(request):
 
 @login_required(login_url = '/')
 @csrf_exempt
+@ajaxWrapper('container', 'link', 'tip', 'name')
 def ajaxAddUrl(request):
     '''
     use ajax to respond to user's adding new bookmarks' request
@@ -29,38 +30,37 @@ def ajaxAddUrl(request):
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
-        if 'container' in post and 'link' in post and \
-        'tip' in post and 'name' in post:
-            user = request.user
-            try:
-                newContainer = Container.objects.get(name=post['container'])
-            except:
-                newContainer = Container(user=user, name=post['container'])
-                newContainer.save()
-                
-            post['link'] = post['link'].strip('/')
-            if not post['link'].startswith("http"): #http://www.ifeng.com/
-                post['link'] = 'http://' + post['link']
-            try:
-                newLinker = Linker.objects.get(link=post['link'])
-            except:
-                newLinker = Linker(container=newContainer, name=post['name'], 
-                                   link=post['link'], opinion=post['tip'],
-                                   date = datetime.now())
+        user = request.user
+        try:
+            newContainer = Container.objects.get(name=post['container'])
+        except:
+            newContainer = Container(user=user, name=post['container'])
+            newContainer.save()
+             
+        post['link'] = post['link'].strip('/')
+        if not post['link'].startswith("http"): #http://www.ifeng.com/
+            post['link'] = 'http://' + post['link']
+        try:
+            newLinker = Linker.objects.get(link=post['link'])
+        except:
+            newLinker = Linker(container=newContainer, name=post['name'], 
+                               link=post['link'], opinion=post['tip'],
+                               date = datetime.now())
+            newLinker.save()
+            to_return['result'] = 'success'
+        else:
+            if newLinker.deleted == True:
+                newLinker.deleted = False
+                newLinker.opinion = post['tip']
                 newLinker.save()
                 to_return['result'] = 'success'
-            else:
-                if newLinker.deleted == True:
-                    newLinker.deleted = False
-                    newLinker.opinion = post['tip']
-                    newLinker.save()
-                    to_return['result'] = 'success'
-    serialized = simplejson.dumps(to_return)
-    return HttpResponse(serialized, mimetype="application/json")
+    
+    return to_return
 
 
 @login_required(login_url = '/')
 @csrf_exempt
+@ajaxWrapper('link_container', 'link_url')
 def ajaxDelUrl(request):
     '''
     use ajax to respond to user's deleting old bookmarks' request. 
@@ -69,37 +69,36 @@ def ajaxDelUrl(request):
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
-        if 'link_url' in post and 'link_container' in post:
-            user = request.user
-            try:
-                container = user.container_set.get(name=post['link_container'])
-                link = container.linker_set.get(link=post['link_url'])
-            except:
-                pass
-            else:
-                link.deleted = True
-                link.save()
-                to_return['result'] = 'success'
-    serialized = simplejson.dumps(to_return)
-    return HttpResponse(serialized, mimetype="application/json")
+        user = request.user
+        try:
+            container = user.container_set.get(name=post['link_container'])
+            link = container.linker_set.get(link=post['link_url'])
+        except:
+            pass
+        else:
+            link.deleted = True
+            link.save()
+            to_return['result'] = 'success'
+    
+    return to_return
 
 @login_required(login_url = '/')
 @csrf_exempt
+@ajaxWrapper('term')
 def autoComplete(request):
     '''
     jquery-ui's auto-complete function which must return JSON
     '''
     to_return = {}
     if request.method == 'GET':
-        if 'term' in request.GET:
-            term = request.GET['term']
-            containers = Container.objects.filter(name__startswith=term).distinct()
-            count = 0
-            for one in containers:
-                count += 1
-                to_return["choice"+str(count)] = one.name
-    serialized = simplejson.dumps(to_return)
-    return HttpResponse(serialized, mimetype="application/json")
+        term = request.GET['term']
+        containers = Container.objects.filter(name__startswith=term).distinct()
+        count = 0
+        for one in containers:
+            count += 1
+            to_return["choice"+str(count)] = one.name
+    return to_return
+
 
                 
 @login_required(login_url = '/')
@@ -117,6 +116,7 @@ def downloadXml(request):
 
 @login_required(login_url = '/')
 @csrf_exempt
+@ajaxWrapper('container', 'link', 'tips')
 def ajaxUpdateTips(request):
     '''
     update user's urls' opinion
@@ -125,23 +125,22 @@ def ajaxUpdateTips(request):
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
-        if 'container' in post and 'link' in post and 'tips' in post:
-            try:
-                container = request.user.container_set.get(name=post['container'])
-                link = container.linker_set.get(link=post['link'])
-            except:
-                pass
-            else:
-                link.opinion = post['tips']
-                link.save()
-                to_return['result'] = 'success'
+        try:
+            container = request.user.container_set.get(name=post['container'])
+            link = container.linker_set.get(link=post['link'])
+        except:
+            pass
+        else:
+            link.opinion = post['tips']
+            link.save()
+            to_return['result'] = 'success'
             
-    serialized = simplejson.dumps(to_return)
-    return HttpResponse(serialized, mimetype="application/json")
+    return to_return
 
 
 @login_required(login_url = '/')
 @csrf_exempt
+@ajaxWrapper('container', 'link', 'votes')
 def ajaxUpdateVotes(request):
     '''
     update user's urls' votes
@@ -150,19 +149,16 @@ def ajaxUpdateVotes(request):
     to_return = {'result': 'failed'}
     if request.method == 'POST':
         post = request.POST.copy()
-        if 'container' in post and 'link' in post and 'votes' in post:
-            try:
-                container = request.user.container_set.get(name=post['container'])
-                link = container.linker_set.get(link=post['link'])
-            except:
-                pass
-            else:
-                link.votes = post['votes'].strip()
-                link.save()
-                to_return['result'] = 'success'            
-            
-    serialized = simplejson.dumps(to_return)
-    return HttpResponse(serialized, mimetype="application/json")
+        try:
+            container = request.user.container_set.get(name=post['container'])
+            link = container.linker_set.get(link=post['link'])
+        except:
+            pass
+        else:
+            link.votes = post['votes'].strip()
+            link.save()
+            to_return['result'] = 'success'            
+    return to_return
     
     
     
