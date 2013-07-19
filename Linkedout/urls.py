@@ -7,6 +7,7 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'linker.views.home', name='home'),
+    url(r'^setting/$', 'linker.views.setting'),
     url(r'^ajaxAddUrl/$', 'linker.views.ajaxAddUrl'),
     url(r'^ajaxDelUrl/$', 'linker.views.ajaxDelUrl'),
     url(r'^autoComplete/$', 'linker.views.autoComplete'),

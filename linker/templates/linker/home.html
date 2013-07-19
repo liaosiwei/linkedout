@@ -4,10 +4,6 @@
 {% block css %}
 	<link href="{% static 'linker/css/jquery-ui.css' %}" rel="stylesheet">
 	<style type="text/css">
-		td.tablerow {
-			position: relative;
-			top: 6px;
-		}
       	#favicon {
       		position: relative; 
       		top: -2px; 
@@ -17,6 +13,9 @@
       		position: absolute; 
       		right: 160px; top: 200px;
       	}
+      	.table th, .table td { 
+     		border-top: none; 
+ 		}
       	#link-trash {
       		position: fixed;
       		position: absolute; right: 170px; bottom: 230px;
@@ -34,7 +33,7 @@
       		text-align: center; 
       	}
       	.container hr {
-      		/* border-color: #7D7D7D; */
+/*       		/* border-color: #7D7D7D; */ */
       		border-color: #CFCFCF;
       		margin: 1px, 0;
       	}
@@ -42,53 +41,76 @@
   	</style>
 {% endblock %} 
 {% block content %}
-	{% if user.is_authenticated %}
-	<h4><a href="downloadXml"><i class="icon-download-alt"></i>download your file</a></h4>
-	<div>
-		{% for container in container_list %}
-			<h3>{{ container.name }}</h3>
+
+<div class="tabbable">
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#sec1">个人主页</a></li>
+    <li><a data-toggle="tab" href="#sec2">搜索网页</a></li>
+</ul>
+</div>
+<div class="tab-content">
+    <div class="tab-pane active" id="sec1">
+		{% if user.is_authenticated %}
 			<div>
-				<table class="table">
-					{% for link in container.linker_set.all|dictsort:"id"|filterDeletedLinks %}
-							{% if forloop.counter0|divisibleby:"4" %}
-								<tr>
-							{% endif %}
-								<td class="onelink tablerow span3">
-									<img id="favicon" src="{{link.link | getFavicon }}" />
-									<a href="{{link.link}}" target="_blank">{{ link.name }}</a>
-								</td>
-							{% if forloop.counter|divisibleby:"4" %}
-								</tr>
-							{% elif forloop.last%}
-								{% with count=forloop.counter %}
-									{% for i in count|fillTableTd:"4" %}
-										<td class="onelink tablerow span3"></td>
-									{% endfor %}
-								{% endwith %}
-								</tr>
-							{% endif %}
-					{% endfor %}
-				</table>
-				<hr>
+				{% for container in container_list %}
+					<h3>{{ container.name }}</h3>
+					<div>
+						<table class="table">
+							{% for link in container.linker_set.all|dictsort:"id"|filterDeletedLinks %}
+									{% if forloop.counter0|divisibleby:"4" %}
+										<tr>
+									{% endif %}
+										<td class="onelink span3">
+											<img id="favicon" src="{{link.link | getFavicon }}" />
+											<a href="{{link.link}}" target="_blank">{{ link.name }}</a>
+										</td>
+									{% if forloop.counter|divisibleby:"4" %}
+										</tr>
+									{% elif forloop.last%}
+										{% with count=forloop.counter %}
+											{% for i in count|fillTableTd:"4" %}
+												<td class="span3"></td>
+											{% endfor %}
+										{% endwith %}
+										</tr>
+									{% endif %}
+							{% endfor %}
+						</table>
+						<hr>
+					</div>
+				{% endfor %}
 			</div>
-		{% endfor %}
+			{% else %}
+			<h1>欢迎</h1>
+			<p>没有账号<a href="/auths/register"><strong>请注册</strong></a>，登陆后可以使用个性化书签设置</p>
+			
+			<div>
+				<h3>
+					<strong>常用网站</strong>
+				</h3>
+				<div>
+					<p>
+						<a href="http://www.baidu.com" target="_blank">百度</a>
+					</p>
+				</div>
+			</div>
+			{% endif %}
+    </div>
+    <div class="tab-pane" id="sec2">
+	    <div class='row'>
+	        <form>
+	        <div class='span3 input-append' style="margin-top:10%; margin-left:30%">
+	            <input class="span2" style="height:20px;width:400px;" id="main_search" type="text" >
+	            <input class="btn" type="button" value="找找新的网站">
+	        </div>
+	       
+	        </form>
+	    </div>
 	</div>
-	{% else %}
-	<h1>欢迎</h1>
-	<p>没有账号<a href="auths/register"><strong>请注册</strong></a>，登陆后可以使用个性化书签设置</p>
-	
-	<div>
-		<h3>
-			<strong>常用网站</strong>
-		</h3>
-		<div>
-			<p>
-				<a href="http://www.baidu.com" target="_blank">百度</a>
-			</p>
-		</div>
-	</div>
-	{% endif %}
-	<div id="dialog-form" title="新建书签">
+
+</div>
+
+<!-- 	<div id="dialog-form" title="新建网签">
 	  <p class="validateTips"></p> 
 	  <form>
 	  <fieldset>
@@ -106,20 +128,20 @@
 	<button id="create-link"><i class="icon-share-alt"></i></button>
 	    
 	<div id="effect" class="ui-widget-content ui-corner-all">
-	  <h3 class="ui-widget-header">删除书签</h3>
-	  <p>将书签拖动到此处即可删除</p>
+	  <h3 class="ui-widget-header">删除网签</h3>
+	  <p>将网签拖动到此处即可删除</p>
 	</div>
 	
-	<button id="link-trash"><i class="icon-trash"></i></button>
+	<button id="link-trash"><i class="icon-trash"></i></button> -->
 {% endblock %} 
 	
 {% block js%}
-	<script src="{% static 'linker/js/jquery-ui.js' %}"></script>
+<!-- 	<script src="{% static 'linker/js/jquery-ui.js' %}"></script>
 	<script src="{% static 'linker/js/addurls.js' %}"></script>
 	<script src="{% static 'linker/js/setvalues.js' %}"></script>
 	<script>
 	  $(document).ready(function() {
-  	    
+		
 	    $( "#create-link" )
 	      .button()
 	      .click(function() {
@@ -189,5 +211,5 @@
     	  minLength: 2
 	    });
 	  })
-	</script>
+	</script> -->
 {% endblock %}

@@ -21,6 +21,16 @@ def home(request):
 
 
 @login_required(login_url = '/')
+def setting(request):
+    '''
+        do some user's settings
+    '''
+    
+    container_list = request.user.container_set.order_by('id')
+    return render(request, 'linker/index.html', {'container_list': container_list})
+    
+
+@login_required(login_url = '/')
 @csrf_exempt
 @ajaxWrapper('container', 'link', 'tip', 'name')
 def ajaxAddUrl(request):
