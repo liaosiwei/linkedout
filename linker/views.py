@@ -184,14 +184,13 @@ def ajaxSearch(request):
         try:
             link = Linker.objects.filter(opinion__icontains=post['query'])
         except:
-            to_return["1"] = "发生未知错误，请重试，谢谢。"
+            pass
         else:
             if link.exists():
                 count = 1
                 for one in link:
                     to_return[str(count)] = {'name': one.name, 'link': one.link, 'tip': one.opinion}
-            else:
-                to_return["1"] = "为搜索到记录，请换一个关键词再次尝试搜索，谢谢。"
+                    count += 1
     return to_return
                     
     

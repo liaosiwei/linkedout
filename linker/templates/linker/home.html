@@ -4,34 +4,14 @@
 {% block css %}
 	<link href="{% static 'linker/css/jquery-ui.css' %}" rel="stylesheet">
 	<style type="text/css">
-      	#favicon {
+       	#favicon {
       		position: relative; 
-      		top: -2px; 
+      		top: -1px;  
       		witdth: 40px; height: 14px;
-      	}
-      	#create-link {
-      		position: absolute; 
-      		right: 160px; top: 200px;
-      	}
+      	} 
       	.table th, .table td { 
      		border-top: none; 
  		}
-      	#link-trash {
-      		position: fixed;
-      		position: absolute; right: 170px; bottom: 230px;
-      		width: 40px; height: 40px;
-      	}
-      	#effect { 
-      		width: 200px; height: 60px; 
-      		padding: 0.4em; position: absolute; 
-      		right: 80px; bottom: 280px; 
-      		text-align: center;
-      	}
-      	#effect h3 { 
-      		margin: 0;  
-      		font-size: 1.2em; 
-      		text-align: center; 
-      	}
       	.container hr {
 /*       		/* border-color: #7D7D7D; */ */
       		border-color: #CFCFCF;
@@ -115,42 +95,26 @@
 
 </div>
 
-<!-- 	<div id="dialog-form" title="新建网签">
-	  <p class="validateTips"></p> 
-	  <form>
-	  <fieldset>
-	  	<label for="container">分类</label>
-	    <input type="text" name="container" id="container" />
-	    <label for="name">名称</label>
-	    <input type="text" name="name" id="name" />
-	    <label for="address">网址</label>
-	    <input type="text" name="address" id="address" value="" />
-	    <label for="tip">说明</label>
-	    <input type="text" name="tip" id="tip" value="" />
-	  </fieldset>
-	  </form>
-	</div>
-	<button id="create-link"><i class="icon-share-alt"></i></button>
-	    
-	<div id="effect" class="ui-widget-content ui-corner-all">
-	  <h3 class="ui-widget-header">删除网签</h3>
-	  <p>将网签拖动到此处即可删除</p>
-	</div>
-	
-	<button id="link-trash"><i class="icon-trash"></i></button> -->
 {% endblock %} 
 	
 {% block js%}
 <script>
 	$(document).ready(function(){
 		
-		function queryReply(data){
+		function queryReply(data, status){
 			var that = $("#query");
 			var replace_html = '<table class="table">';
-			
-			for (var i=0; i<data.length; i++) {
-				
+			var i = 0;
+			for (; i<Object.keys(data).length; i++) {
+				var key = (i+1).toString();
+				var table_row = '<tr><td><a href="' + data[key]['link'] + '" target="_blank">'+ data[key]['name'] + '</a></td><td>' + data[key]['tip'] + '</td><tr>';
+				replace_html = replace_html + table_row;
 			}
+			if (i != 0)
+				replace_html += '</table>';
+			else
+				replace_html = '未搜索到记录，请更换关键词再次搜索，谢谢。';
+			that.html(replace_html);
 		}
 		
 		$("#search-input").keypress(function(e){
@@ -173,81 +137,4 @@
 		});
 	})
 </script>
-<!-- 	<script src="{% static 'linker/js/jquery-ui.js' %}"></script>
-	<script src="{% static 'linker/js/addurls.js' %}"></script>
-	<script src="{% static 'linker/js/setvalues.js' %}"></script>
-	<script>
-	  $(document).ready(function() {
-		
-	    $( "#create-link" )
-	      .button()
-	      .click(function() {
-	        $( "#dialog-form" ).dialog( "open" );
-	      });
-	    
-	    $( "td.onelink" ).draggable({
-	    	  cursor: "move",
-   		      appendTo: "body",
-   		      helper: "clone"
-	    });
-	    
-	    function handle_del_url(data) {
-	    	window.location = "/";
-	    }
-	    
-	    $( "#link-trash" ).droppable({
-	        drop: function(event, ui) {
-            	var delData = {};
-            	delData['link_container'] = ui.draggable.closest("div").prev("h3").text();
-            	delData['link_url'] = ui.draggable.find("a").attr("href");
-	            $.ajax({
-	            	url:"/ajaxDelUrl/",
-	            	type: "POST",
-	            	data: delData,
-	            	dataType: "json",
-	            	success: handle_del_url
-	            });
-	        }
-	      });
-	    function runEffect() {
-	    	var options = { to: { width: 280, height: 185 } };
-	        // run the effect 
-	        $( "#effect" ).show( "clip", options, 500, callback );
-	      };
-	   
-	      //callback function to bring a hidden box back 
-	    function callback() {
-	      setTimeout(function() {
-	        $( "#effect:visible" ).fadeOut();
-	        }, 1000 );
-	    };
-	     
-	    // set effect from select menu value 
-	    $( "#link-trash" ).click(function() {
-	       runEffect();
-	       return false;
-	    });
-	    
-		// set or reset tips by click the set button 
- 		$( ".settips" ).click(function() {
-			settipsfunc($(this));
-			return false;
-		});
-		
-		// set or reset votes by click the thumb button 
-		$( ".setvotes" ).click(function(){		
- 			setvotesfunc($(this));
-			return false;
-		});
-	   
-	    $( "#effect" ).hide();
-	    
-	    // juery-ui's auto-complete widget 
-	    $("#container").autocomplete({
-    	  source: "/autoComplete/",
-    	  minLength: 2
-	    });
-	  })
-	</script> -->
-
 {% endblock %}
