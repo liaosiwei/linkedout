@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^ajaxUpdateTips/$', 'linker.views.ajaxUpdateTips'),
     url(r'^ajaxUpdateVotes/$', 'linker.views.ajaxUpdateVotes'),
     url(r'^ajaxSearch/$', 'linker.views.ajaxSearch'),
+#     url(r'^ajaxAddSearchItem', 'linker.views.ajaxAddSearchItem'),
     url(r'^', include('auths.urls')),
     # url(r'^Linkedout/', include('Linkedout.foo.urls')),
 

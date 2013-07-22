@@ -42,7 +42,7 @@ def ajaxAddUrl(request):
         post = request.POST.copy()
         user = request.user
         try:
-            newContainer = Container.objects.get(name=post['container'])
+            newContainer = user.container_set.get(name=post['container'])
         except:
             newContainer = Container(user=user, name=post['container'])
             newContainer.save()
@@ -51,7 +51,7 @@ def ajaxAddUrl(request):
         if not post['link'].startswith("http"): #http://www.ifeng.com/
             post['link'] = 'http://' + post['link']
         try:
-            newLinker = Linker.objects.get(link=post['link'])
+            newLinker = newContainer.link_set.get(link=post['link'])
         except:
             newLinker = Linker(container=newContainer, name=post['name'], 
                                link=post['link'], opinion=post['tip'],
@@ -181,20 +181,22 @@ def ajaxSearch(request):
     to_return = {}
     if request.method == 'POST':
         post = request.POST.copy()
-        try:
-            link = Linker.objects.filter(opinion__icontains=post['query'])
-        except:
-            pass
-        else:
-            if link.exists():
-                count = 1
-                for one in link:
-                    to_return[str(count)] = {'name': one.name, 'link': one.link, 'tip': one.opinion}
-                    count += 1
+        user = request.user
+        if post['query']:
+            try:
+                link = Linker.objects.filter(opinion__icontains=post['query']).order_by('id')
+            except:
+                pass
+            else:
+                if link.exists():
+                    count = 1
+                    for one in link:
+                        if one.container.user == user:
+                            to_return[str(count)] = {'name': one.name, 'link': one.link, 'tip': one.opinion, 'flag': 'true'}
+                        else:
+                            to_return[str(count)] = {'name': one.name, 'link': one.link, 'tip': one.opinion, 'flag': 'false'}
+                        count += 1
     return to_return
-                    
-    
-    
     
     
     

@@ -91,6 +91,24 @@
 	        	<p>here</p>
 	        </div>
 	    </div>
+		<div class="modal hide fade" tabindex="-1" role="dialog" id="myModal">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    <h3>添加分类和名称</h3>
+		  </div>
+		  <div class="modal-body">
+		  	<label>分类：</label>
+		   	<input type="text" >
+		   	<label>名称：</label>
+		   	<input type="text" >
+		   	<label>说明：</label>
+		   	<input type="text">
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+		    <button class="btn btn-primary" id="additem">完成</button>
+		  </div>
+		</div>
 	</div>
 
 </div>
@@ -100,21 +118,34 @@
 {% block js%}
 <script>
 	$(document).ready(function(){
-		
+		var searchurl = '';
 		function queryReply(data, status){
 			var that = $("#query");
-			var replace_html = '<table class="table">';
-			var i = 0;
-			for (; i<Object.keys(data).length; i++) {
-				var key = (i+1).toString();
-				var table_row = '<tr><td><a href="' + data[key]['link'] + '" target="_blank">'+ data[key]['name'] + '</a></td><td>' + data[key]['tip'] + '</td><tr>';
-				replace_html = replace_html + table_row;
-			}
-			if (i != 0)
+			if (Object.keys(data).length > 0) {
+				var replace_html = '<table class="table">';
+				for (key in data) {
+					if (data[key]['flag'] == 'true') {
+						var button_icon = '<button class="btn btn-mini btn-link" id="plusurl"><i class="icon-ok-sign"></i></button>';
+					}
+					else {
+						var button_icon = '<button class="btn btn-mini btn-link" id="plusurl"><i class="icon-plus"></i></button>';
+					}
+					var table_row = '<tr><td><a href="' + data[key]['link'] + '" target="_blank">'+ data[key]['name'] + '</a></td><td>' + data[key]['tip'] + '</td><td>' + button_icon + '</td><tr>';
+						
+					replace_html = replace_html + table_row;
+				}
 				replace_html += '</table>';
+			}
 			else
-				replace_html = '未搜索到记录，请更换关键词再次搜索，谢谢。';
+				var replace_html = '未搜索到记录，请更换关键词再次搜索，谢谢。';
 			that.html(replace_html);
+			$("#plusurl").click(function(){
+				var addable = $(this).parent().find("i").attr("class");
+				if (addable != 'icon-ok-sign') {
+					searchurl = $(this).parent().parent().find("a").attr("href");
+					$('#myModal').modal('show');
+				}
+			});
 		}
 		
 		$("#search-input").keypress(function(e){
@@ -128,13 +159,32 @@
 		$("#search-button").click(function(){
 			var queryData = {};
 			queryData['query'] = $("#search-input").val();
-			$.ajax({
-				url: "/ajaxSearch/",
-				type: "POST",
-				data: queryData,
-				success: queryReply
-			});
+			if (queryData['query'])
+				$.ajax({
+					url: "/ajaxSearch/",
+					type: "POST",
+					data: queryData,
+					success: queryReply
+				});
 		});
+		
+		$("#additem").click(function(){		
+			var additem = {};
+			additem['container'] = $(".modal-body input:first").val();
+			additem['name'] = $(".modal-body input:eq(1)").val();
+			additem['tip'] = $(".modal-body input:last").val();
+			additem['link'] = searchurl;
+
+			$('#myModal').modal('hide');
+ 			$.ajax({
+				url: "/ajaxAddUrl/",
+				type: "POST",
+				data: additem,
+				success: function(){
+					$("#plusurl").parent().find("i").attr("class", "icon-ok-sign");
+				}
+			});
+		});		
 	})
 </script>
 {% endblock %}
