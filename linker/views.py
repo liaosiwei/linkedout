@@ -189,13 +189,11 @@ def ajaxSearch(request):
                 pass
             else:
                 if link.exists():
-                    count = 1
-                    for one in link:
+                    for count, one in enumerate(link):
                         if one.container.user == user:
                             to_return[str(count)] = {'name': one.name, 'link': one.link, 'tip': one.opinion, 'flag': 'true'}
                         else:
                             to_return[str(count)] = {'name': one.name, 'link': one.link, 'tip': one.opinion, 'flag': 'false'}
-                        count += 1
     return to_return
     
     
